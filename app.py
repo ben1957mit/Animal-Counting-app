@@ -1,29 +1,5 @@
 
-# -----------------------------
-# UI
-# -----------------------------
-st.title("🐾 Animal Counting Game")
-st.subheader("Tap the correct number!")
 
-# Show starsimport streamlit as st
-import random
-
-st.set_page_config(page_title="Animal Counting", page_icon="🐯", layout="centered")
-
-# -----------------------------
-# Animal Data
-# -----------------------------
-animals = {
-    "🐶": "Dog",
-    "🐱": "Cat",
-    "🐰": "Rabbit",
-    "🐵": "Monkey",
-    "🦁": "Lion",
-    "🐘": "Elephant",
-    "🐢": "Turtle",
-    "🐼": "Panda",
-    "🦊": "Fox",
-    "🐸": "Frog"
 }
 
 # -----------------------------
