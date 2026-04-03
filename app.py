@@ -1,24 +1,5 @@
 
 
-}
-
-# -----------------------------
-# Session State
-# -----------------------------
-if "correct_answer" not in st.session_state:
-    st.session_state.correct_answer = None
-
-if "stars" not in st.session_state:
-    st.session_state.stars = 0
-
-# -----------------------------
-# Functions
-# -----------------------------
-def new_question():
-    animal = random.choice(list(animals.keys()))
-    count = random.randint(1, 10)
-    st.session_state.correct_answer = count
-    return animal, count
 
 def reward_screen():
     st.markdown("<h1 style='text-align:center;'>🎉 Great Job! 🎉</h1>", unsafe_allow_html=True)
