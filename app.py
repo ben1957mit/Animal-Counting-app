@@ -1,4 +1,11 @@
-import streamlit as st
+
+# -----------------------------
+# UI
+# -----------------------------
+st.title("🐾 Animal Counting Game")
+st.subheader("Tap the correct number!")
+
+# Show starsimport streamlit as st
 import random
 
 st.set_page_config(page_title="Animal Counting", page_icon="🐯", layout="centered")
@@ -42,13 +49,6 @@ def reward_screen():
     st.markdown("<h2 style='text-align:center;'>You earned all 5 stars!</h2>", unsafe_allow_html=True)
     st.balloons()
 
-# -----------------------------
-# UI
-# -----------------------------
-st.title("🐾 Animal Counting Game")
-st.subheader("Tap the correct number!")
-
-# Show stars
 st.write("### ⭐ Rewards")
 st.write("Stars earned: " + "⭐" * st.session_state.stars)
 
