@@ -1,6 +1,5 @@
 import streamlit as st
 import random
-from playsound import playsound
 import os
 
 st.set_page_config(page_title="Animal Counting", page_icon="🐯", layout="centered")
