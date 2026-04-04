@@ -3,20 +3,20 @@ import random
 import os
 
 # -----------------------------
-# Sound Helper  ← PUT IT HERE
+# Page Config
+# -----------------------------
+st.set_page_config(page_title="Animal Counting", page_icon="🐯", layout="centered")
+
+# -----------------------------
+# Sound Helper
 # -----------------------------
 def play_sound(filename):
     path = f"assets/sounds/{filename}"
-    audio_file = open(path, "rb").read()
-    st.audio(audio_file, format="audio/mp3")
+    if os.path.exists(path):
+        with open(path, "rb") as f:
+            audio_file = f.read()
+        st.audio(audio_file, format="audio/mp3")
 
-# -----------------------------
-# Animal Data
-# -----------------------------
-animals = {
-    ...
-}
-st.set_page_config(page_title="Animal Counting", page_icon="🐯", layout="centered")
 # -----------------------------
 # Animal Data
 # -----------------------------
@@ -39,91 +39,65 @@ animals = {
 if "correct_answer" not in st.session_state:
     st.session_state.correct_answer = None
 
-if "stars" not in st.session_state:
-    st.session_state.stars = 0
-
 if "animal" not in st.session_state:
     st.session_state.animal = None
 
 if "count" not in st.session_state:
     st.session_state.count = None
 
-# -----------------------------
-# Sound Helper
-# -----------------------------
-def play_sound(filename):
-    path = os.path.join("assets", "sounds", filename)
-    if os.path.exists(path):
-        try:
-            playsound(path)
-        except:
-            pass  # Streamlit Cloud may block audio, but local works fine
+if "show_result" not in st.session_state:
+    st.session_state.show_result = False
 
 # -----------------------------
-# New Question
+# Generate New Question
 # -----------------------------
 def new_question():
     st.session_state.animal = random.choice(list(animals.keys()))
-    st.session_state.count = random.randint(1, 10)
+    st.session_state.count = random.randint(1, 5)
     st.session_state.correct_answer = st.session_state.count
+    st.session_state.show_result = False
 
-# -----------------------------
-# Reward Screen
-# -----------------------------
-def reward_screen():
-    st.markdown("<h1 style='text-align:center;'>🎉 Great Job! 🎉</h1>", unsafe_allow_html=True)
-    st.markdown("<h2 style='text-align:center;'>You earned all 5 stars!</h2>", unsafe_allow_html=True)
-    st.balloons()
-    play_sound("cheer.mp3")
+# Generate first question if needed
+if st.session_state.animal is None:
+    new_question()
 
 # -----------------------------
 # UI
 # -----------------------------
-st.title("🐾 Animal Counting Game")
-st.subheader("Tap the correct number!")
+st.title("🐯 Animal Counting Game")
+st.write("### Count the animals and choose the correct number!")
 
-# Show stars
-st.write("### ⭐ Rewards")
-st.write("Stars earned: " + "⭐" * st.session_state.stars)
+# Display animals
+st.write("### How many do you see?")
+st.write((st.session_state.animal + " ") * st.session_state.count)
 
-# If 5 stars → reward screen
-if st.session_state.stars >= 5:
-    reward_screen()
-    if st.button("Play Again", use_container_width=True):
-        st.session_state.stars = 0
-        new_question()
-    st.stop()
-
-# Generate question if needed
-if st.session_state.animal is None:
-    new_question()
-
-# Show animals
-st.write("### Count the animals!")
-st.markdown(
-    f"<div style='font-size: 60px; text-align:center;'>{(st.session_state.animal + ' ') * st.session_state.count}</div>",
-    unsafe_allow_html=True
-)
-
-# -----------------------------
-# Big Toddler Buttons
-# -----------------------------
+# Number buttons
 st.write("### Choose the number:")
-
 cols = st.columns(5)
-for i in range(1, 11):
-    col = cols[(i - 1) % 5]
-    if col.button(str(i), use_container_width=True):
+
+for i in range(1, 6):
+    if cols[i-1].button(str(i)):
         if i == st.session_state.correct_answer:
-            st.success("Great job! 🎉")
+            st.session_state.show_result = "correct"
             play_sound("correct.mp3")
-            st.session_state.stars += 1
         else:
-            st.error("Try again!")
+            st.session_state.show_result = "wrong"
             play_sound("wrong.mp3")
 
-        new_question()
-        st.experimental_rerun()
+# -----------------------------
+# Result Message
+# -----------------------------
+if st.session_state.show_result == "correct":
+    st.success("🎉 Correct! Great job!")
+elif st.session_state.show_result == "wrong":
+    st.error("❌ Oops! Try again!")
+
+# -----------------------------
+# Next Question Button
+# -----------------------------
+if st.button("Next"):
+    new_question()
+
 
 
 
