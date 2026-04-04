@@ -1,6 +1,21 @@
 import streamlit as st
 import random
 import os
+
+# -----------------------------
+# Sound Helper  ← PUT IT HERE
+# -----------------------------
+def play_sound(filename):
+    path = f"assets/sounds/{filename}"
+    audio_file = open(path, "rb").read()
+    st.audio(audio_file, format="audio/mp3")
+
+# -----------------------------
+# Animal Data
+# -----------------------------
+animals = {
+    ...
+}
 st.set_page_config(page_title="Animal Counting", page_icon="🐯", layout="centered")
 # -----------------------------
 # Animal Data
