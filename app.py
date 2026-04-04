@@ -81,7 +81,7 @@ for i in range(1, 6):
         else:
             st.session_state.show_result = "wrong"
             play_sound("wrong.mp3")  
-       new_question()
+new_question()
 # -----------------------------
 # Result Message
 # -----------------------------
