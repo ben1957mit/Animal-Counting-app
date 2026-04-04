@@ -46,7 +46,7 @@ for key, value in defaults.items():
 # -----------------------------
 def new_question():
     st.session_state.animal = random.choice(animals)
-    st.session_state.count = random.randint(1, 5)
+    st.session_state.count = random.randint(1, 10)  # UPDATED: 1–10 animals
     st.session_state.correct_answer = st.session_state.count
     st.session_state.show_result = False
 
@@ -73,15 +73,15 @@ st.write((st.session_state.animal + " ") * st.session_state.count)
 # -----------------------------
 st.write("### Tap the number:")
 
-cols = st.columns(5)
+cols = st.columns(10)  # UPDATED: 10 columns for numbers 1–10
 
-for i in range(1, 6):
+for i in range(1, 11):  # UPDATED: numbers 1–10
     if cols[i-1].button(str(i), use_container_width=True):
         if i == st.session_state.correct_answer:
             st.session_state.show_result = "correct"
             st.session_state.stars += 1
             st.session_state.score += 10
-            st.session_state.progress += 20
+            st.session_state.progress += 10  # UPDATED: 10% per correct answer
             play_sound("correct.mp3")
         else:
             st.session_state.show_result = "wrong"
@@ -95,7 +95,9 @@ for i in range(1, 6):
         time.sleep(1)
 
         # New question unless game is done
-        if not st.session_state.game_complete:
+        if st.session_state.game_complete:
+            st.experimental_rerun()
+        else:
             new_question()
 
 # -----------------------------
@@ -111,11 +113,17 @@ elif st.session_state.show_result == "wrong":
 # -----------------------------
 if st.session_state.game_complete:
     st.balloons()
-    st.success("🎉 YOU DID IT!")
-    st.write(f"🏆 Final Score: **{st.session_state.score}**")
-    st.write(f"⭐ Total Stars: **{st.session_state.stars}**")
+    st.markdown("<h1 style='text-align:center; color:#4CAF50;'>🎉 YOU DID IT! 🎉</h1>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align:center;'>Great job counting the animals!</h2>", unsafe_allow_html=True)
+
+    st.write(f"🏆 **Final Score:** {st.session_state.score}")
+    st.write(f"⭐ **Total Stars:** {st.session_state.stars}")
 
     if st.button("Play Again"):
         for key in defaults:
             st.session_state[key] = defaults[key]
         new_question()
+
+    st.stop()  # Prevents the rest of the app from running
+
+       
