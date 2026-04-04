@@ -94,7 +94,7 @@ elif st.session_state.show_result == "wrong":
 # Next Question Button
 # -----------------------------
 if st.button("Next"):
-    new_question()
+   
 
 
 
