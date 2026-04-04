@@ -21,21 +21,10 @@ def play_sound(filename):
 # -----------------------------
 # Animal Data
 # -----------------------------
-animals = {
-    "🐶": "Dog",
-    "🐱": "Cat",
-    "🐰": "Rabbit",
-    "🐵": "Monkey",
-    "🦁": "Lion",
-    "🐘": "Elephant",
-    "🐢": "Turtle",
-    "🐼": "Panda",
-    "🦊": "Fox",
-    "🐸": "Frog"
-}
+animals = ["🐶", "🐱", "🐰", "🐵", "🦁", "🐘", "🐢", "🐼", "🦊", "🐸"]
 
 # -----------------------------
-# Session State
+# Session State Defaults
 # -----------------------------
 defaults = {
     "correct_answer": None,
@@ -44,9 +33,7 @@ defaults = {
     "show_result": False,
     "stars": 0,
     "progress": 0,
-    "level": "Easy",
     "score": 0,
-    "questions_answered": 0,
     "game_complete": False
 }
 
@@ -55,21 +42,11 @@ for key, value in defaults.items():
         st.session_state[key] = value
 
 # -----------------------------
-# Level Settings
-# -----------------------------
-level_ranges = {
-    "Easy": (1, 5),
-    "Medium": (3, 8),
-    "Hard": (5, 12)
-}
-
-# -----------------------------
 # Generate New Question
 # -----------------------------
 def new_question():
-    min_n, max_n = level_ranges[st.session_state.level]
-    st.session_state.animal = random.choice(list(animals.keys()))
-    st.session_state.count = random.randint(min_n, max_n)
+    st.session_state.animal = random.choice(animals)
+    st.session_state.count = random.randint(1, 5)
     st.session_state.correct_answer = st.session_state.count
     st.session_state.show_result = False
 
@@ -81,7 +58,9 @@ if st.session_state.animal is None:
 # UI
 # -----------------------------
 st.title("🐯 Animal Counting Game")
-st.write(f"### Level: **{st.session_state.level}**")
+st.write("### Count the animals and tap the right number!")
+
+# Stars + Progress
 st.write(f"### ⭐ Stars: **{st.session_state.stars}**")
 st.progress(st.session_state.progress)
 
@@ -89,43 +68,33 @@ st.progress(st.session_state.progress)
 st.write("### How many do you see?")
 st.write((st.session_state.animal + " ") * st.session_state.count)
 
-# Number buttons
-st.write("### Choose the number:")
-cols = st.columns(6)
+# -----------------------------
+# Big Toddler-Friendly Buttons
+# -----------------------------
+st.write("### Tap the number:")
 
-# Generate number range based on level
-min_n, max_n = level_ranges[st.session_state.level]
-numbers = list(range(min_n, max_n + 1))
+cols = st.columns(5)
 
-for idx, num in enumerate(numbers):
-    if cols[idx % 6].button(str(num)):
-        if num == st.session_state.correct_answer:
+for i in range(1, 6):
+    if cols[i-1].button(str(i), use_container_width=True):
+        if i == st.session_state.correct_answer:
             st.session_state.show_result = "correct"
             st.session_state.stars += 1
             st.session_state.score += 10
-            st.session_state.progress += 10
+            st.session_state.progress += 20
             play_sound("correct.mp3")
         else:
             st.session_state.show_result = "wrong"
             play_sound("wrong.mp3")
 
-        st.session_state.questions_answered += 1
-
-        # Level progression
+        # Check for game completion
         if st.session_state.progress >= 100:
-            if st.session_state.level == "Easy":
-                st.session_state.level = "Medium"
-                st.session_state.progress = 0
-            elif st.session_state.level == "Medium":
-                st.session_state.level = "Hard"
-                st.session_state.progress = 0
-            else:
-                st.session_state.game_complete = True
+            st.session_state.game_complete = True
 
-        # Delay before next question
+        # 1-second delay
         time.sleep(1)
 
-        # New question unless game is complete
+        # New question unless game is done
         if not st.session_state.game_complete:
             new_question()
 
@@ -133,16 +102,16 @@ for idx, num in enumerate(numbers):
 # Result Message
 # -----------------------------
 if st.session_state.show_result == "correct":
-    st.success("✅ Correct!")
+    st.success("🎉 Correct!")
 elif st.session_state.show_result == "wrong":
-    st.error("❌ Oops! Try again!")
+    st.error("❌ Try again!")
 
 # -----------------------------
 # Game Complete Screen
 # -----------------------------
 if st.session_state.game_complete:
     st.balloons()
-    st.success("🎉 YOU DID IT! You finished all levels!")
+    st.success("🎉 YOU DID IT!")
     st.write(f"🏆 Final Score: **{st.session_state.score}**")
     st.write(f"⭐ Total Stars: **{st.session_state.stars}**")
 
