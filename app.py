@@ -16,7 +16,6 @@ def play_sound(filename):
         with open(path, "rb") as f:
             audio_file = f.read()
         st.audio(audio_file, format="audio/mp3")
-
 # -----------------------------
 # Animal Data
 # -----------------------------
