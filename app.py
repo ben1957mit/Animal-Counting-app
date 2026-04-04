@@ -32,7 +32,7 @@ defaults = {
     "count": None,
     "show_result": False,
     "stars": 0,
-    "progress": 0,
+    "progress": 0,   # 0–100 internally
     "score": 0,
     "game_complete": False
 }
@@ -46,7 +46,7 @@ for key, value in defaults.items():
 # -----------------------------
 def new_question():
     st.session_state.animal = random.choice(animals)
-    st.session_state.count = random.randint(1, 10)  # UPDATED: 1–10 animals
+    st.session_state.count = random.randint(1, 10)  # 1–10 animals
     st.session_state.correct_answer = st.session_state.count
     st.session_state.show_result = False
 
@@ -62,7 +62,9 @@ st.write("### Count the animals and tap the right number!")
 
 # Stars + Progress
 st.write(f"### ⭐ Stars: **{st.session_state.stars}**")
-st.progress(st.session_state.progress)
+
+# FIXED: Streamlit requires 0–1 range
+st.progress(st.session_state.progress / 100)
 
 # Display animals
 st.write("### How many do you see?")
@@ -73,15 +75,15 @@ st.write((st.session_state.animal + " ") * st.session_state.count)
 # -----------------------------
 st.write("### Tap the number:")
 
-cols = st.columns(10)  # UPDATED: 10 columns for numbers 1–10
+cols = st.columns(10)  # 10 columns for numbers 1–10
 
-for i in range(1, 11):  # UPDATED: numbers 1–10
+for i in range(1, 11):
     if cols[i-1].button(str(i), use_container_width=True):
         if i == st.session_state.correct_answer:
             st.session_state.show_result = "correct"
             st.session_state.stars += 1
             st.session_state.score += 10
-            st.session_state.progress += 10  # UPDATED: 10% per correct answer
+            st.session_state.progress += 10  # 10% per correct answer
             play_sound("correct.mp3")
         else:
             st.session_state.show_result = "wrong"
@@ -124,6 +126,4 @@ if st.session_state.game_complete:
             st.session_state[key] = defaults[key]
         new_question()
 
-    st.stop()  # Prevents the rest of the app from running
-
-       
+    st.stop()  # Freeze on celebration screen
